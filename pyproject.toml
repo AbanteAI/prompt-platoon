@@ -1,4 +1,8 @@
 [tool.ruff]
+# Same as Black.
+line-length = 88
+
+[tool.ruff.lint]
 # Enable pycodestyle (`E`), Pyflakes (`F`), and import sorting (`I`)
 select = ["E", "F", "I"]
 ignore = []
@@ -31,9 +35,6 @@ exclude = [
     "node_modules",
     "venv",
 ]
-
-# Same as Black.
-line-length = 88
 
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"

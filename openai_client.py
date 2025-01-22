@@ -1,14 +1,13 @@
 from dataclasses import dataclass
-from typing import List, Tuple, Dict, Literal, Union
+from dotenv import load_dotenv
+from typing import Dict, List, Tuple, Union
+
 from openai import OpenAI
 from openai.types.chat import (
-    ChatCompletion,
-    ChatCompletionMessage,
-    ChatCompletionUserMessageParam,
-    ChatCompletionSystemMessageParam,
     ChatCompletionAssistantMessageParam,
+    ChatCompletionSystemMessageParam,
+    ChatCompletionUserMessageParam,
 )
-from dotenv import load_dotenv
 
 MessageParam = Union[
     ChatCompletionUserMessageParam,
