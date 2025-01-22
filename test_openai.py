@@ -1,10 +1,12 @@
-from openai_client import get_completion
+from typing import List, Union, cast
+
 from openai.types.chat import (
-    ChatCompletionUserMessageParam,
-    ChatCompletionSystemMessageParam,
     ChatCompletionAssistantMessageParam,
+    ChatCompletionSystemMessageParam,
+    ChatCompletionUserMessageParam,
 )
-from typing import List, Dict, Literal, Union, cast
+
+from openai_client import get_completion
 
 MessageParam = Union[
     ChatCompletionUserMessageParam,
@@ -46,7 +48,10 @@ def main():
         }),
         cast(ChatCompletionAssistantMessageParam, {
             "role": "assistant",
-            "content": "Start with the basics like variables, loops, and functions. Practice with small projects."
+            "content": (
+                "Start with the basics like variables, loops, and functions. "
+                "Practice with small projects."
+            )
         }),
         cast(ChatCompletionUserMessageParam, {
             "role": "user",
