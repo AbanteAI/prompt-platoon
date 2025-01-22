@@ -1,13 +1,8 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Any
+from typing import Any, Dict, List, Tuple
 
 from dotenv import load_dotenv
 from openai import OpenAI
-from openai.types.chat import (
-    ChatCompletionAssistantMessageParam,
-    ChatCompletionSystemMessageParam,
-    ChatCompletionUserMessageParam,
-)
 
 load_dotenv()  # Load environment variables from .env file
 
