@@ -1,13 +1,29 @@
 from openai_client import get_completion
+from openai.types.chat import (
+    ChatCompletionUserMessageParam,
+    ChatCompletionSystemMessageParam,
+    ChatCompletionAssistantMessageParam,
+)
+from typing import List, Dict, Literal, Union, cast
+
+MessageParam = Union[
+    ChatCompletionUserMessageParam,
+    ChatCompletionSystemMessageParam,
+    ChatCompletionAssistantMessageParam,
+]
 
 def main():
     # Example 1: Simple completion
-    messages = [
-        {"role": "user", "content": "What is the capital of France?"}
+    messages: List[MessageParam] = [
+        cast(ChatCompletionUserMessageParam, {
+            "role": "user",
+            "content": "What is the capital of France?"
+        })
     ]
     
     print("Example 1: Simple completion")
-    print("Query:", messages[0]["content"])
+    user_msg = cast(ChatCompletionUserMessageParam, messages[0])
+    print("Query:", user_msg["content"])
     completion, metrics = get_completion(messages)
     print("\nResponse:", completion)
     print("\nMetrics:")
@@ -19,17 +35,31 @@ def main():
     print("\n" + "="*50 + "\n")
     
     # Example 2: Multi-turn conversation
-    messages = [
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "What's the best way to learn Python?"},
-        {"role": "assistant", "content": "Start with the basics like variables, loops, and functions. Practice with small projects."},
-        {"role": "user", "content": "Can you suggest a simple project idea?"}
+    messages: List[MessageParam] = [
+        cast(ChatCompletionSystemMessageParam, {
+            "role": "system",
+            "content": "You are a helpful assistant."
+        }),
+        cast(ChatCompletionUserMessageParam, {
+            "role": "user",
+            "content": "What's the best way to learn Python?"
+        }),
+        cast(ChatCompletionAssistantMessageParam, {
+            "role": "assistant",
+            "content": "Start with the basics like variables, loops, and functions. Practice with small projects."
+        }),
+        cast(ChatCompletionUserMessageParam, {
+            "role": "user",
+            "content": "Can you suggest a simple project idea?"
+        })
     ]
     
     print("Example 2: Multi-turn conversation")
     print("Messages:")
     for msg in messages:
-        print(f"{msg['role']}: {msg['content']}")
+        role = msg.get("role", "unknown")
+        content = msg.get("content", "")
+        print(f"{role}: {content}")
     
     completion, metrics = get_completion(messages)
     print("\nResponse:", completion)

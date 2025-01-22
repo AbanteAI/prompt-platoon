@@ -1,9 +1,20 @@
 from dataclasses import dataclass
-from typing import List, Tuple, Dict, Literal
+from typing import List, Tuple, Dict, Literal, Union
 from openai import OpenAI
-from openai.types.chat import ChatCompletion, ChatCompletionMessage
-from openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam
+from openai.types.chat import (
+    ChatCompletion,
+    ChatCompletionMessage,
+    ChatCompletionUserMessageParam,
+    ChatCompletionSystemMessageParam,
+    ChatCompletionAssistantMessageParam,
+)
 from dotenv import load_dotenv
+
+MessageParam = Union[
+    ChatCompletionUserMessageParam,
+    ChatCompletionSystemMessageParam,
+    ChatCompletionAssistantMessageParam,
+]
 
 load_dotenv()  # Load environment variables from .env file
 
@@ -37,7 +48,7 @@ class CompletionMetrics:
             total_cost=total_cost
         )
 
-def get_completion(messages: List[ChatCompletionMessageParam]) -> Tuple[str, CompletionMetrics]:
+def get_completion(messages: List[MessageParam]) -> Tuple[str, CompletionMetrics]:
     """
     Get a completion from OpenAI's API.
     
