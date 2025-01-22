@@ -1,0 +1,7 @@
+# Production dependencies
+openai>=1.0.0
+python-dotenv>=1.0.0
+
+# Development dependencies
+ruff>=0.1.0
+pyright>=1.1.0
