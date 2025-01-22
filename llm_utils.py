@@ -1,8 +1,14 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, cast
 
 from dotenv import load_dotenv
 from openai import OpenAI
+from openai.types.chat import (
+    ChatCompletionAssistantMessageParam,
+    ChatCompletionMessageParam,
+    ChatCompletionSystemMessageParam,
+    ChatCompletionUserMessageParam,
+)
 
 load_dotenv()  # Load environment variables from .env file
 
@@ -10,21 +16,27 @@ class Messages:
     """A class to manage chat messages for LLM interactions."""
     
     def __init__(self):
-        self._messages: List[Dict[str, str]] = []
+        self._messages: List[ChatCompletionMessageParam] = []
     
     def add_system(self, content: str) -> None:
         """Add a system message."""
-        self._messages.append({"role": "system", "content": content})
+        self._messages.append(
+            cast(ChatCompletionSystemMessageParam, {"role": "system", "content": content})
+        )
     
     def add_user(self, content: str) -> None:
         """Add a user message."""
-        self._messages.append({"role": "user", "content": content})
+        self._messages.append(
+            cast(ChatCompletionUserMessageParam, {"role": "user", "content": content})
+        )
     
     def add_assistant(self, content: str) -> None:
         """Add an assistant message."""
-        self._messages.append({"role": "assistant", "content": content})
+        self._messages.append(
+            cast(ChatCompletionAssistantMessageParam, {"role": "assistant", "content": content})
+        )
     
-    def get_messages(self) -> List[Any]:
+    def get_messages(self) -> List[ChatCompletionMessageParam]:
         """Get the list of messages in OpenAI-compatible format."""
         return self._messages
     
