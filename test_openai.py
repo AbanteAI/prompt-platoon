@@ -48,8 +48,10 @@ def main():
         }),
         cast(ChatCompletionAssistantMessageParam, {
             "role": "assistant",
-            "content": "Start with the basics like variables, loops, and functions. "
-                      "Practice with small projects."
+            "content": (
+                "Start with the basics like variables, loops, and functions. "
+                "Practice with small projects."
+            )
         }),
         cast(ChatCompletionUserMessageParam, {
             "role": "user",
