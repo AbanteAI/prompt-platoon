@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List, Tuple, cast
+from typing import Dict, List, Tuple, cast
 
 from dotenv import load_dotenv
 from openai import OpenAI
