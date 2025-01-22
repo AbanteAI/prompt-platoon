@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 from typing import List, Tuple
 from openai import OpenAI
+from dotenv import load_dotenv
+
+load_dotenv()  # Load environment variables from .env file
 
 @dataclass
 class CompletionMetrics:
