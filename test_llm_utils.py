@@ -29,9 +29,10 @@ def main():
     
     print("Example 2: Multi-turn conversation")
     print("Messages:")
-    for msg in messages.get_messages():
-        role = msg["role"]
-        content = msg["content"]
+    for msg in messages:
+        # Use get() to safely access potentially optional fields
+        role = msg.get("role", "unknown")
+        content = msg.get("content", "")
         print(f"{role}: {content}")
     
     completion, metrics = get_completion(messages)

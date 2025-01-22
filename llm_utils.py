@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, cast
+from typing import Dict, Iterator, List, Sequence, Tuple, Union, cast
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -20,25 +20,26 @@ class Messages:
     
     def add_system(self, content: str) -> None:
         """Add a system message."""
-        self._messages.append(
-            cast(ChatCompletionSystemMessageParam, {"role": "system", "content": content})
-        )
+        message = {"role": "system", "content": content}
+        self._messages.append(cast(ChatCompletionSystemMessageParam, message))
     
     def add_user(self, content: str) -> None:
         """Add a user message."""
-        self._messages.append(
-            cast(ChatCompletionUserMessageParam, {"role": "user", "content": content})
-        )
+        message = {"role": "user", "content": content}
+        self._messages.append(cast(ChatCompletionUserMessageParam, message))
     
     def add_assistant(self, content: str) -> None:
         """Add an assistant message."""
-        self._messages.append(
-            cast(ChatCompletionAssistantMessageParam, {"role": "assistant", "content": content})
-        )
+        message = {"role": "assistant", "content": content}
+        self._messages.append(cast(ChatCompletionAssistantMessageParam, message))
     
-    def get_messages(self) -> List[ChatCompletionMessageParam]:
+    def get_messages(self) -> Sequence[ChatCompletionMessageParam]:
         """Get the list of messages in OpenAI-compatible format."""
         return self._messages
+    
+    def __iter__(self) -> Iterator[ChatCompletionMessageParam]:
+        """Make Messages iterable for compatibility with OpenAI client."""
+        return iter(self._messages)
     
     def clear(self) -> None:
         """Clear all messages."""
@@ -74,12 +75,14 @@ class CompletionMetrics:
             total_cost=total_cost
         )
 
-def get_completion(messages: Messages | List[Dict[str, str]]) -> Tuple[str, CompletionMetrics]:
+def get_completion(
+    messages: Union[Messages, Sequence[ChatCompletionMessageParam]]
+) -> Tuple[str, CompletionMetrics]:
     """
     Get a completion from OpenAI's API.
     
     Args:
-        messages: Either a Messages object or a list of message dictionaries.
+        messages: Either a Messages object or a sequence of message parameters.
                  Example: Messages().add_user("Hello") or
                          [{"role": "user", "content": "Hello"}]
         
@@ -89,9 +92,6 @@ def get_completion(messages: Messages | List[Dict[str, str]]) -> Tuple[str, Comp
     Raises:
         ValueError: If the response content is None
     """
-    # Convert Messages object to list if needed
-    if isinstance(messages, Messages):
-        messages = messages.get_messages()
     client = OpenAI()
     
     response = client.chat.completions.create(
