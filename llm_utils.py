@@ -1,21 +1,49 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Union
+from typing import Dict, Iterator, List, Sequence, Tuple, Union, cast
 
 from dotenv import load_dotenv
 from openai import OpenAI
 from openai.types.chat import (
     ChatCompletionAssistantMessageParam,
+    ChatCompletionMessageParam,
     ChatCompletionSystemMessageParam,
     ChatCompletionUserMessageParam,
 )
 
-MessageParam = Union[
-    ChatCompletionUserMessageParam,
-    ChatCompletionSystemMessageParam,
-    ChatCompletionAssistantMessageParam,
-]
-
 load_dotenv()  # Load environment variables from .env file
+
+class Messages:
+    """A class to manage chat messages for LLM interactions."""
+    
+    def __init__(self):
+        self._messages: List[ChatCompletionMessageParam] = []
+    
+    def add_system(self, content: str) -> None:
+        """Add a system message."""
+        message = {"role": "system", "content": content}
+        self._messages.append(cast(ChatCompletionSystemMessageParam, message))
+    
+    def add_user(self, content: str) -> None:
+        """Add a user message."""
+        message = {"role": "user", "content": content}
+        self._messages.append(cast(ChatCompletionUserMessageParam, message))
+    
+    def add_assistant(self, content: str) -> None:
+        """Add an assistant message."""
+        message = {"role": "assistant", "content": content}
+        self._messages.append(cast(ChatCompletionAssistantMessageParam, message))
+    
+    def get_messages(self) -> Sequence[ChatCompletionMessageParam]:
+        """Get the list of messages in OpenAI-compatible format."""
+        return self._messages
+    
+    def __iter__(self) -> Iterator[ChatCompletionMessageParam]:
+        """Make Messages iterable for compatibility with OpenAI client."""
+        return iter(self._messages)
+    
+    def clear(self) -> None:
+        """Clear all messages."""
+        self._messages = []
 
 @dataclass
 class CompletionMetrics:
@@ -47,14 +75,16 @@ class CompletionMetrics:
             total_cost=total_cost
         )
 
-def get_completion(messages: List[MessageParam]) -> Tuple[str, CompletionMetrics]:
+def get_completion(
+    messages: Union[Messages, Sequence[ChatCompletionMessageParam]]
+) -> Tuple[str, CompletionMetrics]:
     """
     Get a completion from OpenAI's API.
     
     Args:
-        messages: List of message parameters for the chat completion.
-                 Example: [{"role": "user", "content": "Hello"}]
-                 Roles can be: "system", "user", "assistant", "tool", or "function"
+        messages: Either a Messages object or a sequence of message parameters.
+                 Example: Messages().add_user("Hello") or
+                         [{"role": "user", "content": "Hello"}]
         
     Returns:
         Tuple of (completion_text, CompletionMetrics)
