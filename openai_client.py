@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from dotenv import load_dotenv
 from typing import Dict, List, Tuple, Union
 
+from dotenv import load_dotenv
 from openai import OpenAI
 from openai.types.chat import (
     ChatCompletionAssistantMessageParam,
